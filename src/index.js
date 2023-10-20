@@ -1,5 +1,5 @@
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
+const cors = require("cors");
 const admin = require("firebase-admin");
 const serviceAccount = require("../firebaseConfig.js");
 
@@ -12,9 +12,9 @@ const usersRouter = require("./routers/users");
 const chatsRouter = require("./routers/chats");
 
 var corsOptions = {
-  origin: 'http://localhost:5173',
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-}
+  origin: "http://localhost:5173",
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
 
 const app = express();
 
@@ -24,18 +24,14 @@ app.use("/analytics", analyticsRouter);
 app.use("/users", usersRouter);
 app.use("/chats", chatsRouter);
 
-
-
-
-
-app.get('/run-analytics', async (req, res) => {
+app.get("/run-analytics", async (req, res) => {
   res.status(200).send("hi");
 });
 
-app.get('/', async (req, res) => {
+app.get("/", async (req, res) => {
   res.status(200).send("hi");
 });
 
 app.listen(3000, () => {
-  console.log('Server is running on port 3000');
+  console.log("Server is running on port 3000");
 });

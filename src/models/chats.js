@@ -47,6 +47,7 @@ exports.getChatCount = async function () {
 exports.getChatsByDay = async function (date) {
   // Create a query against the collection
   const query = db.collection("chats");
+  console.log("cahts called");
 
   // Start and end timestamps for the day
   const start = new Date(date);
@@ -55,8 +56,8 @@ exports.getChatsByDay = async function (date) {
   end.setHours(23, 59, 59, 999);
 
   // Convert to Firestore timestamps
-  const startTimestamp =start.getTime();;
-  const endTimestamp = end.getTime();;
+  const startTimestamp = start.getTime();
+  const endTimestamp = end.getTime();
 
   try {
     // Query for users who logged in on the specific day
@@ -64,10 +65,10 @@ exports.getChatsByDay = async function (date) {
       .where("lastAccessed", ">=", startTimestamp)
       .where("lastAccessed", "<=", endTimestamp)
       .get();
+      console.log("snapshot recieved called");
 
     // Get user data from the documents
     const chats = snapshot.docs.map((doc) => doc.data());
-    console.log(snapshot.size);
     return chats;
   } catch (err) {
     console.log(err);
