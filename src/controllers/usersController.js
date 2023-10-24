@@ -23,3 +23,11 @@ exports.byDate = async function (req, res) {
   console.log(usersToday);
   res.status(200).json(usersToday);
 };
+
+
+exports.getFilteredUsers = async function (req, res) {
+  console.log(req.body);
+  const filteredUsers = await users.getFilteredUsers(req.body.sortby,req.body.page);
+  console.log(filteredUsers);
+  res.status(200).json(filteredUsers);
+};

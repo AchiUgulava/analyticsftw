@@ -16,6 +16,43 @@ exports.getAllUsers = async function () {
   }
 };
 
+
+
+exports.getFilteredUsers = async function(sortBy, page ) {
+  try {
+    const usersCollection = db.collection('users');
+    let query = usersCollection;
+    const direction = sortBy.asc ? "asc" : "desc"
+    if (page > 0) {
+      const startAfterDoc = await usersCollection
+        .orderBy(sortBy.name, direction)
+        // .limit((page) * 50)
+        .get()
+        .then((snapshot) => snapshot.docs[snapshot.docs.length - 1].data());
+      // .then((snapshot) => snapshot.docs[snapshot.docs.length - 1].data().sortBy.value.name);
+      console.log(startAfterDoc)
+      query = query.orderBy(sortBy.name, direction).startAfter(startAfterDoc.email || startAfterDoc.id || startAfterDoc.name);
+    } else {
+      query = query.orderBy(sortBy.name, direction);
+    }
+
+    const querySnapshot = await query.get();
+    // const querySnapshot = await query.limit(50).get();
+
+    const usersArray = [];
+    const count = querySnapshot.size
+    querySnapshot.forEach((doc) => {
+      usersArray.push({ id: doc.id, ...doc.data() });
+    });
+    
+    console.log(usersArray);
+    return {users:usersArray, count:count};
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
 function getCurrentTimestamp() {
   const now = new Date();
   now.setHours(0, 0, 0, 0);

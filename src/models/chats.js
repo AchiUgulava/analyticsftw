@@ -65,7 +65,7 @@ exports.getChatsByDay = async function (date) {
       .where("lastAccessed", ">=", startTimestamp)
       .where("lastAccessed", "<=", endTimestamp)
       .get();
-      console.log("snapshot recieved called");
+    console.log("snapshot recieved called");
 
     // Get user data from the documents
     const chats = snapshot.docs.map((doc) => doc.data());

@@ -79,8 +79,10 @@ exports.getWeekly = async function () {
   try {
     let querySnapshot = await query.get();
     let documents = querySnapshot.docs.map((doc) => doc.data()).reverse();
-    console.log(documents);
-    return documents;
+    let combined = combineAnalytics(documents);
+    console.log(combined);
+    
+    return combined;
   } catch (err) {
     console.log(err);
     return "bleh";
@@ -301,4 +303,27 @@ async function addDateFieldToDocuments() {
   } catch (err) {
     console.log(err);
   }
+}
+function combineAnalytics(analyticsArray) {
+  return analyticsArray.reduce((acc, analytics) => {
+    for (let key in analytics) {
+      if (typeof analytics[key] === 'object' && analytics[key] !== null) {
+        for (let subKey in analytics[key]) {
+          if (!acc[key]) {
+            acc[key] = {};
+          }
+          if (!acc[key][subKey]) {
+            acc[key][subKey] = [];
+          }
+          acc[key][subKey].push(analytics[key][subKey]);
+        }
+      } else {
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push(analytics[key]);
+      }
+    }
+    return acc;
+  }, {});
 }
