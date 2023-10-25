@@ -78,7 +78,12 @@ exports.getWeekly = async function () {
   let query = collectionRef.orderBy("date").limitToLast(7);
   try {
     let querySnapshot = await query.get();
-    let documents = querySnapshot.docs.map((doc) => doc.data()).reverse();
+    let documents = querySnapshot.docs.map((doc) => doc.data());
+    let reversedDocuments = [];
+    for (let i = documents.length - 1; i >= 0; i--) {
+      reversedDocuments.push(documents[i]);
+    }
+    console.log(documents, reversedDocuments)
     let combined = combineAnalytics(documents);
     console.log(combined);
     
