@@ -154,8 +154,7 @@ exports.getByEmail = async function(req, res) {
           model: Message,
           as: 'Messages', // Include messages for each chat
           order: [
-            ['timestamp', 'ASC'],
-            ['seq_num', 'ASC']
+            ['timestamp', 'ASC']
           ]
         }]
       }]
