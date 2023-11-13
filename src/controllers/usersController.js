@@ -152,7 +152,11 @@ exports.getByEmail = async function(req, res) {
         as: 'Chats',
         include: [{
           model: Message,
-          as: 'Messages' // Include messages for each chat
+          as: 'Messages', // Include messages for each chat
+          order: [
+            ['timestamp', 'ASC'],
+            ['seq_num', 'ASC']
+          ]
         }]
       }]
     });
