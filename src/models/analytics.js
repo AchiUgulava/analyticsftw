@@ -1,5 +1,5 @@
-const chats = require("./chats");
-const users = require("./users");
+const chats = require("./Chat");
+const users = require("./User");
 const axios = require("axios");
 const admin = require("firebase-admin");
 const db = admin.firestore();
