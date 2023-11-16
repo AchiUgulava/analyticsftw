@@ -38,20 +38,6 @@ exports.getSortedUsers = async function(req, res) {
       offset: offset
     });
 
-  //   const [results, metadata] = await sequelize.query(`
-  //   SELECT
-  //     User.*,
-  //     (SELECT COUNT(*) FROM chats WHERE chats.user_id = User.user_id) AS chat_count
-  //   FROM
-  //     (SELECT * FROM users ORDER BY ${sortField} ${sortDirection} LIMIT ${limit} OFFSET ${offset}) AS User
-  //   LEFT JOIN chats ON User.user_id = chats.user_id
-  //   GROUP BY User.user_id
-  // `);
-  
-  
-  // console.log(`sortField: ${sortField}, sortDirection: ${sortDirection}, limit: ${limit}, offset: ${offset}, metadate ${metadata}`);
-  
-
     res.status(200).json(users);
   } catch (error) {
     console.error(error);
@@ -91,7 +77,7 @@ exports.userCount = async function(req, res) {
 
 exports.getSortedAndFilteredUsers = async function(req, res) {
   try {
-    // Sorting
+    // Sortingi
     const defaultSort = { name: 'last_login', asc: 'desc' };
     const sortOption = req.body.sortby || defaultSort;
     const sortDirection = sortOption.asc === 'asc' ? 'ASC' : 'DESC';
@@ -116,7 +102,13 @@ exports.getSortedAndFilteredUsers = async function(req, res) {
       where: filterCondition,
       attributes: {
         include: [
-          [sequelize.fn('COUNT', sequelize.col('Chats.user_id')), 'chat_count']
+          [sequelize.fn('COUNT', sequelize.col('Chats.user_id')), 'chat_count'],
+          [sequelize.literal(`(
+            SELECT COUNT(*)
+            FROM messages
+            INNER JOIN chats ON messages.chat_id = chats.chat_id
+            WHERE chats.user_id = User.user_id
+          )`), 'message_count']
         ]
       },
       include: [
@@ -124,7 +116,7 @@ exports.getSortedAndFilteredUsers = async function(req, res) {
           model: Chat,
           as: 'Chats',
           attributes: [],
-          duplicating: false
+          duplicating: false,
         }
       ],
       group: ['User.user_id'],
